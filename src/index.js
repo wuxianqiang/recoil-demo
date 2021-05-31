@@ -1,13 +1,46 @@
-import React from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+// import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { RecoilRoot, atom, useRecoilState } from 'recoil';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+const todoListState = atom({
+  key: 'todoList',
+  default: [],
+})
+
+function App () {
+  return (
+    <RecoilRoot>
+      <TodoApp />
+    </RecoilRoot>
+  )
+}
+
+function TodoApp () {
+  const [ todoList, setTodoList ] = useRecoilState(todoListState)
+  const [text, setText] = useState('')
+  const handleInput = (e) => {
+    setText(e.target.value)
+  }
+  const addTodo = (e) => {
+    setTodoList([...todoList, text])
+  }
+  return (
+    <div>
+      <input value={text} type="text" onInput={handleInput} />
+      <button onClick={() => addTodo(text)}>添加</button>
+      <ul>
+        {
+          todoList.map(item => <li key={item}>{item}</li>)
+        }
+      </ul>
+    </div>
+  )
+}
+
+ReactDOM.render(<App />,
   document.getElementById('root')
 );
 
